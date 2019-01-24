@@ -4,6 +4,14 @@
         <form v-on:submit.prevent="save()">
             <label>Model:</label>
             <input v-model="accessory.model" type="text">
+            <label>Type:</label>
+            <select v-model="accessory.type_id">
+                <option v-for="type in types" :value="type.id">{{ type.name }}</option>
+            </select>
+            <label>Workplace:</label>
+            <select v-model="accessory.workplace_id">
+                <option v-for="workplace in workplaces" :value="workplace.id">{{ workplace.mark}}</option>
+            </select>
             <label>Mark:</label>
             <input v-model="accessory.mark" type="text">
             <label>Purchase year:</label>
@@ -24,14 +32,16 @@
         data() {
             return {
                 accessory: {
-                    type_id: '5',
+                    type_id: '',
                     workplace_id: '',
                     model: '',
                     mark: '',
                     purchase_year: '',
                     value: '',
                     description: ''
-                }
+                },
+                types: [],
+                workplaces: [],
             }
         },
         methods: {
@@ -45,10 +55,30 @@
                 }).catch(error => {
                     console.log(error.response.data)
                 });
-            }
+            },
+            fetchTypes: function () {
+                window.axios({
+                    method: 'get',
+                    url: '/api/types'
+                }).then(response => {
+                    this.types = response.data
+                    console.log(response)
+                });
+            },
+            fetchWorkplaces: function () {
+                window.axios({
+                    method: 'get',
+                    url: '/api/workplaces'
+                }).then(response => {
+                    this.workplaces = response.data
+                    console.log(response)
+                });
+            },
         },
         mounted() {
             console.log('Component mounted.')
+            this.fetchWorkplaces()
+            this.fetchTypes()
         }
     }
 </script>

@@ -5,7 +5,7 @@
             <tr><th>Mark</th><th>Options</th></tr>
             </thead>
             <tbody>
-            <tr v-for="workplace in workplaces"><td>{{ workplace.mark}}</td><td><button @click="deleteType(workplace.id)">Delete</button></td></tr>
+            <tr v-for="workplace in workplaces"><td>{{ workplace.mark}}</td><td><button @click="deleteWorkplaces(workplace.id)">Delete</button></td></tr>
             </tbody>
         </table>
 
@@ -20,7 +20,7 @@
             }
         },
         methods: {
-            readTypes: function () {
+            readWorkplaces: function () {
                 window.axios({
                     method: 'get',
                     url: '/api/workplaces'
@@ -29,7 +29,7 @@
                     console.log(response)
                 });
             },
-            deleteType: function (id) {
+            deleteWorkplaces: function (id) {
                 window.axios({
                     method: 'delete',
                     url: '/api/workplaces/' + id
@@ -43,7 +43,7 @@
         },
         mounted() {
             console.log('Component mounted.')
-            this.readTypes();
+            this.readWorkplaces();
         }
     }
 </script>

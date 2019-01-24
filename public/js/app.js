@@ -1784,18 +1784,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       accessory: {
-        type_id: '5',
+        type_id: '',
         workplace_id: '',
         model: '',
         mark: '',
         purchase_year: '',
         value: '',
         description: ''
-      }
+      },
+      types: [],
+      workplaces: []
     };
   },
   methods: {
@@ -1809,10 +1819,34 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(function (error) {
         console.log(error.response.data);
       });
+    },
+    fetchTypes: function fetchTypes() {
+      var _this = this;
+
+      window.axios({
+        method: 'get',
+        url: '/api/types'
+      }).then(function (response) {
+        _this.types = response.data;
+        console.log(response);
+      });
+    },
+    fetchWorkplaces: function fetchWorkplaces() {
+      var _this2 = this;
+
+      window.axios({
+        method: 'get',
+        url: '/api/workplaces'
+      }).then(function (response) {
+        _this2.workplaces = response.data;
+        console.log(response);
+      });
     }
   },
   mounted: function mounted() {
     console.log('Component mounted.');
+    this.fetchWorkplaces();
+    this.fetchTypes();
   }
 });
 
@@ -2043,7 +2077,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    readTypes: function readTypes() {
+    readWorkplaces: function readWorkplaces() {
       var _this = this;
 
       window.axios({
@@ -2054,7 +2088,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
       });
     },
-    deleteType: function deleteType(id) {
+    deleteWorkplaces: function deleteWorkplaces(id) {
       var _this2 = this;
 
       window.axios({
@@ -2071,7 +2105,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     console.log('Component mounted.');
-    this.readTypes();
+    this.readWorkplaces();
   }
 });
 
@@ -37061,6 +37095,84 @@ var render = function() {
           }
         }),
         _vm._v(" "),
+        _c("label", [_vm._v("Type:")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.accessory.type_id,
+                expression: "accessory.type_id"
+              }
+            ],
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.accessory,
+                  "type_id",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.types, function(type) {
+            return _c("option", { domProps: { value: type.id } }, [
+              _vm._v(_vm._s(type.name))
+            ])
+          }),
+          0
+        ),
+        _vm._v(" "),
+        _c("label", [_vm._v("Workplace:")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.accessory.workplace_id,
+                expression: "accessory.workplace_id"
+              }
+            ],
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.accessory,
+                  "workplace_id",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.workplaces, function(workplace) {
+            return _c("option", { domProps: { value: workplace.id } }, [
+              _vm._v(_vm._s(workplace.mark))
+            ])
+          }),
+          0
+        ),
+        _vm._v(" "),
         _c("label", [_vm._v("Mark:")]),
         _vm._v(" "),
         _c("input", {
@@ -37447,7 +37559,7 @@ var render = function() {
                 {
                   on: {
                     click: function($event) {
-                      _vm.deleteType(workplace.id)
+                      _vm.deleteWorkplaces(workplace.id)
                     }
                   }
                 },
