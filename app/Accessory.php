@@ -9,6 +9,8 @@ class Accessory extends Model
 {
     use SoftDeletes;
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
+
     public function type()
     {
         return $this->belongsTo('App\Type');

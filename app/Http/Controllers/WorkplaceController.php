@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Workplace;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class WorkplaceController extends Controller
 {
@@ -13,7 +15,9 @@ class WorkplaceController extends Controller
      */
     public function index()
     {
-        //
+        $workplaces = Workplace::all();
+
+        return response()->json($workplaces, Response::HTTP_OK);
     }
 
     /**
@@ -34,7 +38,16 @@ class WorkplaceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'mark' => 'required|max:100|unique:accessories',
+            'description' => 'required|min:30'
+
+        ]);
+
+        $workplace = Workplace::create($request->all());
+
+
+        return response()->json($workplace, Response::HTTP_CREATED);
     }
 
     /**
@@ -75,10 +88,13 @@ class WorkplaceController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Workplace $workplace)
     {
-        //
+        $workplace->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
+
     }
 }

@@ -22,8 +22,17 @@
                         <router-link tag="li" :to="{ name: 'type' }">
                             <a class="nav-link">Create type</a>
                         </router-link>
+                        <router-link tag="li" :to="{ name: 'accessories' }">
+                            <a class="nav-link">Accessories</a>
+                        </router-link>
                         <router-link tag="li" :to="{ name: 'accessory' }">
                             <a class="nav-link">Create accessory</a>
+                        </router-link>
+                        <router-link tag="li" :to="{ name: 'workplaces' }">
+                            <a class="nav-link">Workplaces</a>
+                        </router-link>
+                        <router-link tag="li" :to="{ name: 'workplace' }">
+                            <a class="nav-link">Create workplace</a>
                         </router-link>
 
                     </ul>

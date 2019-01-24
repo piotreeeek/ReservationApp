@@ -2,17 +2,10 @@
     <div class="container">
         <p>Create new accessory .</p>
         <form v-on:submit.prevent="save()">
-            <label>Model:</label>
-            <input v-model="accessory.model" type="text">
             <label>Mark:</label>
-            <input v-model="accessory.mark" type="text">
-            <label>Purchase year:</label>
-            <input v-model="accessory.purchase_year" type="number" min="1900" max="2099" step="1">
-            <label>Value:</label>
-            <input v-model="accessory.value" type="number" min="0.00" max="10000.00" step="0.01">
+            <input v-model="workplace.mark" type="text">
             <label>Description:</label>
-            <textarea v-model="accessory.description"></textarea>
-
+            <textarea v-model="workplace.description"></textarea>
 
             <button class="btn">Add</button>
         </form>
@@ -23,13 +16,8 @@
     export default {
         data() {
             return {
-                accessory: {
-                    type_id: '5',
-                    workplace_id: '',
-                    model: '',
+                workplace: {
                     mark: '',
-                    purchase_year: '',
-                    value: '',
                     description: ''
                 }
             }
@@ -38,8 +26,8 @@
             save: function () {
                 window.axios({
                     method: 'post',
-                    url: '/api/accessories',
-                    data: this.accessory
+                    url: '/api/workplaces',
+                    data: this.workplace
                 }).then(response => {
                     console.log(response)
                 }).catch(error => {

@@ -48,7 +48,7 @@ class TypeController extends Controller
         $type->name = $request->input('name');
         $type->save();
 
-        return response()->json($type, 200);
+        return response()->json($type, Response::HTTP_CREATED);
     }
 
     /**
@@ -94,5 +94,7 @@ class TypeController extends Controller
     public function destroy(Type $type)
     {
         $type->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

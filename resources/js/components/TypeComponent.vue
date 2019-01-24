@@ -24,6 +24,10 @@
                     method: 'post',
                     url: '/api/types',
                     data: this.type
+                }).then(response => {
+                    console.log(response)
+                }).catch(error => {
+                    console.log(error.response)
                 })
             }
         },

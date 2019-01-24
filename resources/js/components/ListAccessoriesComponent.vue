@@ -2,10 +2,10 @@
     <div class="container">
         <table class="table">
             <thead>
-            <tr><th>Name</th><th>Options</th></tr>
+            <tr><th>Model</th><th>Options</th></tr>
             </thead>
             <tbody>
-                <tr v-for="type in types"><td>{{ type.name }}</td><td><button @click="deleteType(type.id)">Delete</button></td></tr>
+            <tr v-for="accessory in accessories"><td>{{ accessory.model }}</td><td><button @click="deleteAccessory(accessory.id)">Delete</button></td></tr>
             </tbody>
         </table>
 
@@ -16,28 +16,28 @@
     export default {
         data() {
             return {
-                types: []
+                accessories: []
             }
         },
         methods: {
-            readTypes: function () {
+            readAccessories: function () {
                 window.axios({
                     method: 'get',
-                    url: '/api/types'
+                    url: '/api/accessories'
                 }).then(response => {
-                    this.types = response.data
+                    this.accessories = response.data
                     console.log(response)
                 }).catch(error => {
-                    console.log(error.response)
+                    console.log(error.data);
                 });
             },
-            deleteType: function (id) {
+            deleteAccessory: function (id) {
                 window.axios({
                     method: 'delete',
-                    url: '/api/types/' + id
+                    url: '/api/accessories/' + id
                 }).then(response => {
-                    console.log(response);
-                    this.readTypes()
+                    console.log(response)
+                    this.readAccessories()
                 }).catch(error => {
                     console.log(error.response)
                 });
@@ -45,7 +45,7 @@
         },
         mounted() {
             console.log('Component mounted.')
-            this.readTypes();
+            this.readAccessories();
         }
     }
 </script>
