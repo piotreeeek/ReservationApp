@@ -1,11 +1,18 @@
 <template>
     <div class="container">
+        <type-component></type-component>
         <table class="table">
             <thead>
             <tr><th>Name</th><th>Options</th></tr>
             </thead>
             <tbody>
-                <tr v-for="type in types"><td>{{ type.name }}</td><td><button @click="deleteType(type.id)">Delete</button></td></tr>
+                <tr v-for="type in types">
+                    <td>{{ type.name }}</td>
+                    <td>
+                        <button v-if="type.accessories.length < 1" @click="deleteType(type.id)">Delete</button>
+                        <button @click="editType(type.id)">Edit</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
@@ -37,15 +44,23 @@
                     url: '/api/types/' + id
                 }).then(response => {
                     console.log(response);
+                    Event.$emit('clearAddEditComponent');
                     this.readTypes()
                 }).catch(error => {
                     console.log(error.response)
                 });
+            },
+            editType: function (typeId) {
+                Event.$emit('editType', typeId)
             }
         },
         mounted() {
             console.log('Component mounted.')
             this.readTypes();
+
+            Event.$on('refreshTypesTable', () =>{
+                this.readTypes();
+            })
         }
     }
 </script>

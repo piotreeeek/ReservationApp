@@ -9,6 +9,8 @@ class Type extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['mname'];
+
     public $timestamps = false;
 
     public function accessories() {

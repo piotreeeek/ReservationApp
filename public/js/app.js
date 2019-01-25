@@ -2039,6 +2039,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2067,16 +2074,25 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/types/' + id
       }).then(function (response) {
         console.log(response);
+        Event.$emit('clearAddEditComponent');
 
         _this2.readTypes();
       }).catch(function (error) {
         console.log(error.response);
       });
+    },
+    editType: function editType(typeId) {
+      Event.$emit('editType', typeId);
     }
   },
   mounted: function mounted() {
+    var _this3 = this;
+
     console.log('Component mounted.');
     this.readTypes();
+    Event.$on('refreshTypesTable', function () {
+      _this3.readTypes();
+    });
   }
 });
 
@@ -2170,6 +2186,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2177,35 +2195,73 @@ __webpack_require__.r(__webpack_exports__);
         name: ''
       },
       errors: false,
-      success: false
+      success: false,
+      editing: false,
+      editTypeId: ''
     };
   },
   methods: {
     save: function save() {
       var _this = this;
 
+      var method = this.editing ? 'put' : 'post';
+      var url = this.editing ? '/api/types/' + this.editTypeId : '/api/types';
       window.axios({
-        method: 'post',
-        url: '/api/types',
+        method: method,
+        url: url,
         data: this.type
       }).then(function (response) {
         console.log(response.status);
 
         if (response.status = 201) {
           _this.success = "Added new Type";
+
+          _this.clearComponent();
+
           setTimeout(function () {
             _this.success = false;
           }, 3000);
-          _this.errors = false;
+          Event.$emit('refreshTypesTable');
         }
       }).catch(function (error) {
         console.log(error.response);
         _this.errors = error.response.data.errors;
       });
+    },
+    setEditingType: function setEditingType(editTypeId) {
+      var _this2 = this;
+
+      window.axios({
+        method: 'get',
+        url: 'api/types/' + editTypeId
+      }).then(function (response) {
+        console.log(response.data);
+        _this2.editing = true;
+        _this2.type.name = response.data.name;
+        _this2.editTypeId = editTypeId;
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+    clearComponent: function clearComponent() {
+      this.errors = false;
+      this.type = {
+        name: ''
+      };
+      this.editing = false;
+      this.editTypeId = '';
     }
   },
   mounted: function mounted() {
+    var _this3 = this;
+
     console.log('Component mounted.');
+    Event.$on('editType', function (editTypeId) {
+      _this3.setEditingType(editTypeId);
+    });
+    Event.$on('clearAddEditComponent', function () {
+      _this3.clearComponent();
+    });
   }
 });
 
@@ -37625,34 +37681,56 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("table", { staticClass: "table" }, [
-      _vm._m(0),
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c("type-component"),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.types, function(type) {
-          return _c("tr", [
-            _c("td", [_vm._v(_vm._s(type.name))]),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      _vm.deleteType(type.id)
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.types, function(type) {
+            return _c("tr", [
+              _c("td", [_vm._v(_vm._s(type.name))]),
+              _vm._v(" "),
+              _c("td", [
+                type.accessories.length < 1
+                  ? _c(
+                      "button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.deleteType(type.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.editType(type.id)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Delete")]
-              )
+                  },
+                  [_vm._v("Edit")]
+                )
+              ])
             ])
-          ])
-        }),
-        0
-      )
-    ])
-  ])
+          }),
+          0
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -37752,7 +37830,9 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("p", [_vm._v("Create new accessory type.")]),
+    _vm.editing
+      ? _c("p", [_vm._v("Edit existing type.")])
+      : _c("p", [_vm._v("Create new accessory type.")]),
     _vm._v(" "),
     _c(
       "form",
@@ -37796,7 +37876,9 @@ var render = function() {
             : _vm._e()
         ]),
         _vm._v(" "),
-        _c("button", { staticClass: "btn" }, [_vm._v("Add")])
+        _vm.editing
+          ? _c("button", { staticClass: "btn" }, [_vm._v("Save")])
+          : _c("button", { staticClass: "btn" }, [_vm._v("Add")])
       ]
     )
   ])
@@ -51823,6 +51905,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
+window.Event = new Vue();
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -51834,6 +51917,7 @@ Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('layout-component', __webpack_require__(/*! ./components/LayoutComponent */ "./resources/js/components/LayoutComponent.vue").default);
+Vue.component('type-component', __webpack_require__(/*! ./components/TypeComponent */ "./resources/js/components/TypeComponent.vue").default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

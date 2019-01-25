@@ -1,14 +1,16 @@
 <template>
     <div class="container">
         <div class="alert-success" v-if="success != false">{{ success }}</div>
-        <p>Create new accessory type.</p>
+        <p v-if="editing">Edit existing type.</p>
+        <p v-else>Create new accessory type.</p>
         <form v-on:submit.prevent="save()">
             <div class="form-group">
                 <label>Type name:</label>
                 <input v-model="type.name" type="text">
                 <p class="alert-danger" v-if="errors.name">{{ errors.name.join(' ') }}</p>
             </div>
-            <button class="btn">Add</button>
+            <button class="btn" v-if="editing">Save</button>
+            <button class="btn" v-else>Add</button>
         </form>
     </div>
 </template>
@@ -21,32 +23,66 @@
                     name: ''
                 },
                 errors: false,
-                success: false
+                success: false,
+                editing: false,
+                editTypeId: ''
             }
         },
         methods: {
             save: function () {
+                var method = this.editing ? 'put' : 'post';
+                var url = this.editing ? '/api/types/' + this.editTypeId : '/api/types';
                 window.axios({
-                    method: 'post',
-                    url: '/api/types',
+                    method: method,
+                    url: url,
                     data: this.type
                 }).then(response => {
                     console.log(response.status)
                     if(response.status = 201) {
-                        this.success = "Added new Type"
+                        this.success = "Added new Type";
+                        this.clearComponent();
                         setTimeout(() => {
                             this.success = false;
                         }, 3000);
-                        this.errors = false
+
+                        Event.$emit('refreshTypesTable')
                     }
                 }).catch(error => {
                     console.log(error.response)
                     this.errors = error.response.data.errors;
                 })
+            },
+            setEditingType: function (editTypeId) {
+                window.axios({
+                    method: 'get',
+                    url: 'api/types/' + editTypeId
+                }).then(response => {
+                    console.log(response.data)
+                    this.editing = true;
+                    this.type.name = response.data.name
+                    this.editTypeId = editTypeId
+                }).catch(error => {
+                    console.log(error.response)
+                })
+            },
+            clearComponent: function () {
+                this.errors = false
+                this.type = {
+                    name: ''
+                };
+                this.editing = false;
+                this.editTypeId = ''
             }
         },
         mounted() {
             console.log('Component mounted.')
+
+            Event.$on('editType', (editTypeId) => {
+                this.setEditingType(editTypeId);
+            })
+            Event.$on('clearAddEditComponent', () =>{
+                this.clearComponent();
+            })
         }
     }
 </script>

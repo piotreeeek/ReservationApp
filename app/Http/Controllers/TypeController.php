@@ -15,7 +15,7 @@ class TypeController extends Controller
      */
     public function index()
     {
-        $types = Type::all();
+        $types = Type::with('accessories')->get();
 
         return response()->json($types, Response::HTTP_OK);
     }
@@ -59,7 +59,11 @@ class TypeController extends Controller
      */
     public function show($id)
     {
-        //
+        if (!$type = Type::with('accessories')->find($id)) {
+            return response()->json(['error' => 'No type for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($type, Response::HTTP_OK);
     }
 
     /**
@@ -82,7 +86,20 @@ class TypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $type = Type::find($id);
+
+        if (!$type) {
+            return response()->json(['error' => 'No type for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+
+        $request->validate([
+            'name' => 'required|max:50|unique:types'
+        ]);
+
+        $type->fill($request->all());
+        $type->save();
+
+        return response()->json('cipa', Response::HTTP_OK);
     }
 
     /**
