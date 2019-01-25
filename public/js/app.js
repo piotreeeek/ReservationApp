@@ -1792,6 +1792,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1805,40 +1826,54 @@ __webpack_require__.r(__webpack_exports__);
         description: ''
       },
       types: [],
-      workplaces: []
+      workplaces: [],
+      errors: false,
+      success: false,
+      current_year: new Date().getFullYear()
     };
   },
   methods: {
     save: function save() {
+      var _this = this;
+
       window.axios({
         method: 'post',
         url: '/api/accessories',
         data: this.accessory
       }).then(function (response) {
         console.log(response);
+
+        if (response.status = 201) {
+          _this.success = "Added new Accessory";
+          setTimeout(function () {
+            _this.success = false;
+          }, 3000);
+          _this.errors = false;
+        }
       }).catch(function (error) {
         console.log(error.response.data);
+        _this.errors = error.response.data.errors;
       });
     },
     fetchTypes: function fetchTypes() {
-      var _this = this;
+      var _this2 = this;
 
       window.axios({
         method: 'get',
         url: '/api/types'
       }).then(function (response) {
-        _this.types = response.data;
+        _this2.types = response.data;
         console.log(response);
       });
     },
     fetchWorkplaces: function fetchWorkplaces() {
-      var _this2 = this;
+      var _this3 = this;
 
       window.axios({
         method: 'get',
         url: '/api/workplaces'
       }).then(function (response) {
-        _this2.workplaces = response.data;
+        _this3.workplaces = response.data;
         console.log(response);
       });
     }
@@ -2131,24 +2166,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       type: {
         name: ''
-      }
+      },
+      errors: false,
+      success: false
     };
   },
   methods: {
     save: function save() {
+      var _this = this;
+
       window.axios({
         method: 'post',
         url: '/api/types',
         data: this.type
       }).then(function (response) {
-        console.log(response);
+        console.log(response.status);
+
+        if (response.status = 201) {
+          _this.success = "Added new Type";
+          setTimeout(function () {
+            _this.success = false;
+          }, 3000);
+          _this.errors = false;
+        }
       }).catch(function (error) {
         console.log(error.response);
+        _this.errors = error.response.data.errors;
       });
     }
   },
@@ -2182,25 +2234,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       workplace: {
         mark: '',
         description: ''
-      }
+      },
+      errors: false,
+      success: false
     };
   },
   methods: {
     save: function save() {
+      var _this = this;
+
       window.axios({
         method: 'post',
         url: '/api/workplaces',
         data: this.workplace
       }).then(function (response) {
         console.log(response);
+        _this.success = "Added new Workplace";
+        setTimeout(function () {
+          _this.success = false;
+        }, 3000);
+        _this.errors = false;
       }).catch(function (error) {
         console.log(error.response.data);
+        _this.errors = error.response.data.errors;
       });
     }
   },
@@ -37059,6 +37128,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _vm.success != false
+      ? _c("div", { staticClass: "alert-success" }, [
+          _vm._v(_vm._s(_vm.success))
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("p", [_vm._v("Create new accessory .")]),
     _vm._v(" "),
     _c(
@@ -37072,197 +37147,263 @@ var render = function() {
         }
       },
       [
-        _c("label", [_vm._v("Model:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.accessory.model,
-              expression: "accessory.model"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.accessory.model },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.accessory, "model", $event.target.value)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", [_vm._v("Type:")]),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Model:")]),
+          _vm._v(" "),
+          _c("input", {
             directives: [
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.accessory.type_id,
-                expression: "accessory.type_id"
+                value: _vm.accessory.model,
+                expression: "accessory.model"
               }
             ],
+            attrs: { type: "text" },
+            domProps: { value: _vm.accessory.model },
             on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.$set(
-                  _vm.accessory,
-                  "type_id",
-                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                )
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.accessory, "model", $event.target.value)
               }
             }
-          },
-          _vm._l(_vm.types, function(type) {
-            return _c("option", { domProps: { value: type.id } }, [
-              _vm._v(_vm._s(type.name))
-            ])
           }),
-          0
-        ),
+          _vm._v(" "),
+          _vm.errors.model
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.model.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
-        _c("label", [_vm._v("Workplace:")]),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Type:")]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.accessory.type_id,
+                  expression: "accessory.type_id"
+                }
+              ],
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.accessory,
+                    "type_id",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            _vm._l(_vm.types, function(type) {
+              return _c("option", { domProps: { value: type.id } }, [
+                _vm._v(_vm._s(type.name))
+              ])
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _vm.errors.type_id
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.type_id.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
-        _c(
-          "select",
-          {
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Workplace:")]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.accessory.workplace_id,
+                  expression: "accessory.workplace_id"
+                }
+              ],
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.$set(
+                    _vm.accessory,
+                    "workplace_id",
+                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                  )
+                }
+              }
+            },
+            _vm._l(_vm.workplaces, function(workplace) {
+              return _c("option", { domProps: { value: workplace.id } }, [
+                _vm._v(_vm._s(workplace.mark))
+              ])
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _vm.errors.workplace_id
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.workplace_id.join(" ")))
+              ])
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Mark:")]),
+          _vm._v(" "),
+          _c("input", {
             directives: [
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.accessory.workplace_id,
-                expression: "accessory.workplace_id"
+                value: _vm.accessory.mark,
+                expression: "accessory.mark"
               }
             ],
+            attrs: { type: "text" },
+            domProps: { value: _vm.accessory.mark },
             on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.$set(
-                  _vm.accessory,
-                  "workplace_id",
-                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                )
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.accessory, "mark", $event.target.value)
               }
             }
-          },
-          _vm._l(_vm.workplaces, function(workplace) {
-            return _c("option", { domProps: { value: workplace.id } }, [
-              _vm._v(_vm._s(workplace.mark))
-            ])
           }),
-          0
-        ),
+          _vm._v(" "),
+          _vm.errors.mark
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.mark.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
-        _c("label", [_vm._v("Mark:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.accessory.mark,
-              expression: "accessory.mark"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.accessory.mark },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Purchase year:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.accessory.purchase_year,
+                expression: "accessory.purchase_year"
               }
-              _vm.$set(_vm.accessory, "mark", $event.target.value)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", [_vm._v("Purchase year:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.accessory.purchase_year,
-              expression: "accessory.purchase_year"
-            }
-          ],
-          attrs: { type: "number", min: "1900", max: "2099", step: "1" },
-          domProps: { value: _vm.accessory.purchase_year },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+            ],
+            attrs: {
+              type: "number",
+              min: "1900",
+              max: _vm.current_year,
+              step: "1"
+            },
+            domProps: { value: _vm.accessory.purchase_year },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.accessory, "purchase_year", $event.target.value)
               }
-              _vm.$set(_vm.accessory, "purchase_year", $event.target.value)
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _vm.errors.purchase_year
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.purchase_year.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
-        _c("label", [_vm._v("Value:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.accessory.value,
-              expression: "accessory.value"
-            }
-          ],
-          attrs: { type: "number", min: "0.00", max: "10000.00", step: "0.01" },
-          domProps: { value: _vm.accessory.value },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Value:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.accessory.value,
+                expression: "accessory.value"
               }
-              _vm.$set(_vm.accessory, "value", $event.target.value)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", [_vm._v("Description:")]),
-        _vm._v(" "),
-        _c("textarea", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.accessory.description,
-              expression: "accessory.description"
-            }
-          ],
-          domProps: { value: _vm.accessory.description },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+            ],
+            attrs: {
+              type: "number",
+              min: "0.00",
+              max: "10000.00",
+              step: "0.01"
+            },
+            domProps: { value: _vm.accessory.value },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.accessory, "value", $event.target.value)
               }
-              _vm.$set(_vm.accessory, "description", $event.target.value)
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _vm.errors.value
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.value.join(" ")))
+              ])
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Description:")]),
+          _vm._v(" "),
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.accessory.description,
+                expression: "accessory.description"
+              }
+            ],
+            domProps: { value: _vm.accessory.description },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.accessory, "description", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm.errors.description
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.description.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
         _c("button", { staticClass: "btn" }, [_vm._v("Add")])
       ]
@@ -37605,6 +37746,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _vm.success != false
+      ? _c("div", { staticClass: "alert-success" }, [
+          _vm._v(_vm._s(_vm.success))
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("p", [_vm._v("Create new accessory type.")]),
     _vm._v(" "),
     _c(
@@ -37618,28 +37765,36 @@ var render = function() {
         }
       },
       [
-        _c("label", [_vm._v("Type name:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.type.name,
-              expression: "type.name"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.type.name },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Type name:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.type.name,
+                expression: "type.name"
               }
-              _vm.$set(_vm.type, "name", $event.target.value)
+            ],
+            attrs: { type: "text" },
+            domProps: { value: _vm.type.name },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.type, "name", $event.target.value)
+              }
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _vm.errors.name
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.name.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
         _c("button", { staticClass: "btn" }, [_vm._v("Add")])
       ]
@@ -37669,6 +37824,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _vm.success != false
+      ? _c("div", { staticClass: "alert-success" }, [
+          _vm._v(_vm._s(_vm.success))
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("p", [_vm._v("Create new accessory .")]),
     _vm._v(" "),
     _c(
@@ -37682,50 +37843,66 @@ var render = function() {
         }
       },
       [
-        _c("label", [_vm._v("Mark:")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.workplace.mark,
-              expression: "workplace.mark"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.workplace.mark },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Mark:")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.workplace.mark,
+                expression: "workplace.mark"
               }
-              _vm.$set(_vm.workplace, "mark", $event.target.value)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("label", [_vm._v("Description:")]),
-        _vm._v(" "),
-        _c("textarea", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.workplace.description,
-              expression: "workplace.description"
-            }
-          ],
-          domProps: { value: _vm.workplace.description },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+            ],
+            attrs: { type: "text" },
+            domProps: { value: _vm.workplace.mark },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.workplace, "mark", $event.target.value)
               }
-              _vm.$set(_vm.workplace, "description", $event.target.value)
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _vm.errors.mark
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.mark.join(" ")))
+              ])
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", [_vm._v("Description:")]),
+          _vm._v(" "),
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.workplace.description,
+                expression: "workplace.description"
+              }
+            ],
+            domProps: { value: _vm.workplace.description },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.workplace, "description", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm.errors.description
+            ? _c("p", { staticClass: "alert-danger" }, [
+                _vm._v(_vm._s(_vm.errors.description.join(" ")))
+              ])
+            : _vm._e()
+        ]),
         _vm._v(" "),
         _c("button", { staticClass: "btn" }, [_vm._v("Add")])
       ]
