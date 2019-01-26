@@ -37,9 +37,9 @@
                     url: url,
                     data: this.type
                 }).then(response => {
-                    console.log(response.status)
-                    if(response.status = 201) {
-                        this.success = "Added new Type";
+                    console.log(response)
+                    if(response.status === 201 || response.status === 200) {
+                        this.success = response.status === 200 ? "Save edited type." : "Added new Type";
                         this.clearComponent();
                         setTimeout(() => {
                             this.success = false;

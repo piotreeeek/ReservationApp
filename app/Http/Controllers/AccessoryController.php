@@ -44,8 +44,7 @@ class AccessoryController extends Controller
             'mark' => 'required|max:100|unique:accessories',
             'purchase_year' => 'required|digits:4|integer|min:1900|max:'.\Carbon\Carbon::tomorrow()->year,
             'value' => "required|regex:/^\d*(\.\d{1,2})?$/",
-            'description' => 'required|min:30'
-
+            'description' => 'required|min:5'
         ]);
 
         $accessory = Accessory::create($request->all());
@@ -62,7 +61,11 @@ class AccessoryController extends Controller
      */
     public function show($id)
     {
-        //
+        if (!$accessory = Accessory::with(['type', 'workplace'])->find($id)) {
+            return response()->json(['error' => 'No accessory for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($accessory, Response::HTTP_OK);
     }
 
     /**
@@ -85,7 +88,25 @@ class AccessoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $accessory = Accessory::find($id);
+
+        if (!$accessory) {
+            return response()->json(['error' => 'No accessory for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+
+        $request->validate([
+            'model' => 'required',
+            'type_id' => 'exists:types,id',
+            'mark' => 'required|max:100|unique:accessories,mark,' . $accessory->id . ',id',
+            'purchase_year' => 'required|digits:4|integer|min:1900|max:'.\Carbon\Carbon::tomorrow()->year,
+            'value' => "required|regex:/^\d*(\.\d{1,2})?$/",
+            'description' => 'required|min:5'
+        ]);
+
+        $accessory->fill($request->all());
+        $accessory->save();
+
+        return response()->json($accessory, Response::HTTP_OK);
     }
 
     /**

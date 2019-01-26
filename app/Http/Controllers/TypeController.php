@@ -99,7 +99,7 @@ class TypeController extends Controller
         $type->fill($request->all());
         $type->save();
 
-        return response()->json('cipa', Response::HTTP_OK);
+        return response()->json($type, Response::HTTP_OK);
     }
 
     /**

@@ -40,7 +40,7 @@ class WorkplaceController extends Controller
     {
         $request->validate([
             'mark' => 'required|max:100|unique:accessories',
-            'description' => 'required|min:30'
+            'description' => 'required|min:5'
 
         ]);
 

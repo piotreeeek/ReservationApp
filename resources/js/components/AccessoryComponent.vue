@@ -1,7 +1,8 @@
 <template>
     <div class="container">
         <div class="alert-success" v-if="success != false">{{ success }}</div>
-        <p>Create new accessory .</p>
+        <p v-if="editing">Edit existing accessory.</p>
+        <p v-else>Create new accessory.</p>
         <form v-on:submit.prevent="save()">
             <div class="form-group">
                 <label>Model:</label>
@@ -43,7 +44,8 @@
                 <textarea v-model="accessory.description"></textarea>
                 <p class="alert-danger" v-if="errors.description">{{ errors.description.join(' ') }}</p>
             </div>
-            <button class="btn">Add</button>
+            <button class="btn" v-if="editing">Save</button>
+            <button class="btn" v-else>Add</button>
         </form>
     </div>
 </template>
@@ -65,23 +67,29 @@
                 workplaces: [],
                 errors: false,
                 success: false,
-                current_year: (new Date()).getFullYear()
+                current_year: (new Date()).getFullYear(),
+                editing: false,
+                editAccessoryId: ''
             }
         },
         methods: {
             save: function () {
+                var method = this.editing ? 'put' : 'post';
+                var url = this.editing ? '/api/accessories/' + this.editAccessoryId : '/api/accessories';
                 window.axios({
-                    method: 'post',
-                    url: '/api/accessories',
+                    method: method,
+                    url: url,
                     data: this.accessory
                 }).then(response => {
                     console.log(response)
-                    if(response.status = 201) {
-                        this.success = "Added new Accessory"
+                    if(response.status === 201 || response.status === 200) {
+                        this.success = response.status === 200 ? "Save edited accessory." : "Added new accessory";
+                        this.clearComponent();
                         setTimeout(() => {
                             this.success = false;
                         }, 3000);
-                        this.errors = false
+
+                        Event.$emit('refreshAccessoriesTable')
                     }
                 }).catch(error => {
                     console.log(error.response.data)
@@ -106,11 +114,53 @@
                     console.log(response)
                 });
             },
+            setEditingAccessory: function (editAccessoryId) {
+                window.axios({
+                    method: 'get',
+                    url: 'api/accessories/' + editAccessoryId
+                }).then(response => {
+                    console.log(response.data)
+                    this.editing = true;
+                    this.accessory = {
+                        type_id: response.data.type_id,
+                        workplace_id: response.data.workplace_id,
+                        model: response.data.model,
+                        mark: response.data.mark,
+                        purchase_year: response.data.purchase_year,
+                        value: response.data.value,
+                        description: response.data.description
+                    }
+                    this.editAccessoryId = editAccessoryId
+                }).catch(error => {
+                    console.log(error.response)
+                })
+            },
+            clearComponent: function () {
+                this.errors = false
+                this.accessory = {
+                    type_id: '',
+                    workplace_id: '',
+                    model: '',
+                    mark: '',
+                    purchase_year: '',
+                    value: '',
+                    description: ''
+                };
+                this.editing = false;
+                this.editAccessoryId = ''
+            }
         },
         mounted() {
             console.log('Component mounted.')
             this.fetchWorkplaces()
             this.fetchTypes()
+
+            Event.$on('editAccessory', (editAccessoryId) => {
+                this.setEditingAccessory(editAccessoryId);
+            })
+            Event.$on('clearAddEditComponent', () =>{
+                this.clearComponent();
+            })
         }
     }
 </script>

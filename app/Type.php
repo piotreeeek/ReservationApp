@@ -9,7 +9,7 @@ class Type extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['mname'];
+    protected $fillable = ['name'];
 
     public $timestamps = false;
 

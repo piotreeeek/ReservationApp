@@ -1813,6 +1813,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1829,26 +1831,33 @@ __webpack_require__.r(__webpack_exports__);
       workplaces: [],
       errors: false,
       success: false,
-      current_year: new Date().getFullYear()
+      current_year: new Date().getFullYear(),
+      editing: false,
+      editAccessoryId: ''
     };
   },
   methods: {
     save: function save() {
       var _this = this;
 
+      var method = this.editing ? 'put' : 'post';
+      var url = this.editing ? '/api/accessories/' + this.editAccessoryId : '/api/accessories';
       window.axios({
-        method: 'post',
-        url: '/api/accessories',
+        method: method,
+        url: url,
         data: this.accessory
       }).then(function (response) {
         console.log(response);
 
-        if (response.status = 201) {
-          _this.success = "Added new Accessory";
+        if (response.status === 201 || response.status === 200) {
+          _this.success = response.status === 200 ? "Save edited accessory." : "Added new accessory";
+
+          _this.clearComponent();
+
           setTimeout(function () {
             _this.success = false;
           }, 3000);
-          _this.errors = false;
+          Event.$emit('refreshAccessoriesTable');
         }
       }).catch(function (error) {
         console.log(error.response.data);
@@ -1876,12 +1885,57 @@ __webpack_require__.r(__webpack_exports__);
         _this3.workplaces = response.data;
         console.log(response);
       });
+    },
+    setEditingAccessory: function setEditingAccessory(editAccessoryId) {
+      var _this4 = this;
+
+      window.axios({
+        method: 'get',
+        url: 'api/accessories/' + editAccessoryId
+      }).then(function (response) {
+        console.log(response.data);
+        _this4.editing = true;
+        _this4.accessory = {
+          type_id: response.data.type_id,
+          workplace_id: response.data.workplace_id,
+          model: response.data.model,
+          mark: response.data.mark,
+          purchase_year: response.data.purchase_year,
+          value: response.data.value,
+          description: response.data.description
+        };
+        _this4.editAccessoryId = editAccessoryId;
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+    clearComponent: function clearComponent() {
+      this.errors = false;
+      this.accessory = {
+        type_id: '',
+        workplace_id: '',
+        model: '',
+        mark: '',
+        purchase_year: '',
+        value: '',
+        description: ''
+      };
+      this.editing = false;
+      this.editAccessoryId = '';
     }
   },
   mounted: function mounted() {
+    var _this5 = this;
+
     console.log('Component mounted.');
     this.fetchWorkplaces();
     this.fetchTypes();
+    Event.$on('editAccessory', function (editAccessoryId) {
+      _this5.setEditingAccessory(editAccessoryId);
+    });
+    Event.$on('clearAddEditComponent', function () {
+      _this5.clearComponent();
+    });
   }
 });
 
@@ -1973,6 +2027,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2001,16 +2063,27 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/accessories/' + id
       }).then(function (response) {
         console.log(response);
+        Event.$emit('clearAddEditComponent');
 
         _this2.readAccessories();
+
+        console.log("aktualka");
       }).catch(function (error) {
         console.log(error.response);
       });
+    },
+    editAccessory: function editAccessory(accessoryId) {
+      Event.$emit('editAccessory', accessoryId);
     }
   },
   mounted: function mounted() {
+    var _this3 = this;
+
     console.log('Component mounted.');
     this.readAccessories();
+    Event.$on('refreshAccessoriesTable', function () {
+      _this3.readAccessories();
+    });
   }
 });
 
@@ -2211,10 +2284,10 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: this.type
       }).then(function (response) {
-        console.log(response.status);
+        console.log(response);
 
-        if (response.status = 201) {
-          _this.success = "Added new Type";
+        if (response.status === 201 || response.status === 200) {
+          _this.success = response.status === 200 ? "Save edited type." : "Added new Type";
 
           _this.clearComponent();
 
@@ -37190,7 +37263,9 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("p", [_vm._v("Create new accessory .")]),
+    _vm.editing
+      ? _c("p", [_vm._v("Edit existing accessory.")])
+      : _c("p", [_vm._v("Create new accessory.")]),
     _vm._v(" "),
     _c(
       "form",
@@ -37461,7 +37536,9 @@ var render = function() {
             : _vm._e()
         ]),
         _vm._v(" "),
-        _c("button", { staticClass: "btn" }, [_vm._v("Add")])
+        _vm.editing
+          ? _c("button", { staticClass: "btn" }, [_vm._v("Save")])
+          : _c("button", { staticClass: "btn" }, [_vm._v("Add")])
       ]
     )
   ])
@@ -37621,34 +37698,58 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("table", { staticClass: "table" }, [
-      _vm._m(0),
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c("accessory-component"),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.accessories, function(accessory) {
-          return _c("tr", [
-            _c("td", [_vm._v(_vm._s(accessory.model))]),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      _vm.deleteAccessory(accessory.id)
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.accessories, function(accessory) {
+            return _c("tr", [
+              _c("td", [_vm._v(_vm._s(accessory.model))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(accessory.mark))]),
+              _vm._v(" "),
+              _c("td", [
+                !accessory.workplace
+                  ? _c(
+                      "button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.deleteAccessory(accessory.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.editAccessory(accessory.id)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Delete")]
-              )
+                  },
+                  [_vm._v("Edit")]
+                )
+              ])
             ])
-          ])
-        }),
-        0
-      )
-    ])
-  ])
+          }),
+          0
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -37656,7 +37757,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", [
-      _c("tr", [_c("th", [_vm._v("Model")]), _c("th", [_vm._v("Options")])])
+      _c("tr", [
+        _c("th", [_vm._v("Model")]),
+        _c("th", [_vm._v("Mark")]),
+        _c("th", [_vm._v("Options")])
+      ])
     ])
   }
 ]
@@ -51918,6 +52023,7 @@ window.Event = new Vue();
 
 Vue.component('layout-component', __webpack_require__(/*! ./components/LayoutComponent */ "./resources/js/components/LayoutComponent.vue").default);
 Vue.component('type-component', __webpack_require__(/*! ./components/TypeComponent */ "./resources/js/components/TypeComponent.vue").default);
+Vue.component('accessory-component', __webpack_require__(/*! ./components/AccessoryComponent */ "./resources/js/components/AccessoryComponent.vue").default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -1,11 +1,19 @@
 <template>
     <div class="container">
+        <accessory-component></accessory-component>
         <table class="table">
             <thead>
-            <tr><th>Model</th><th>Options</th></tr>
+            <tr><th>Model</th><th>Mark</th><th>Options</th></tr>
             </thead>
             <tbody>
-            <tr v-for="accessory in accessories"><td>{{ accessory.model }}</td><td><button @click="deleteAccessory(accessory.id)">Delete</button></td></tr>
+            <tr v-for="accessory in accessories">
+                <td>{{ accessory.model }}</td>
+                <td>{{ accessory.mark }}</td>
+                <td>
+                    <button v-if="!accessory.workplace" @click="deleteAccessory(accessory.id)">Delete</button>
+                    <button @click="editAccessory(accessory.id)">Edit</button>
+                </td>
+            </tr>
             </tbody>
         </table>
 
@@ -25,7 +33,7 @@
                     method: 'get',
                     url: '/api/accessories'
                 }).then(response => {
-                    this.accessories = response.data
+                    this.accessories = response.data;
                     console.log(response)
                 }).catch(error => {
                     console.log(error.data);
@@ -36,16 +44,25 @@
                     method: 'delete',
                     url: '/api/accessories/' + id
                 }).then(response => {
-                    console.log(response)
+                    console.log(response);
+                    Event.$emit('clearAddEditComponent');
                     this.readAccessories()
+                    console.log("aktualka")
                 }).catch(error => {
                     console.log(error.response)
                 });
+            },
+            editAccessory: function(accessoryId) {
+                Event.$emit('editAccessory', accessoryId)
             }
         },
         mounted() {
             console.log('Component mounted.')
             this.readAccessories();
+
+            Event.$on('refreshAccessoriesTable', () => {
+                this.readAccessories();
+            })
         }
     }
 </script>
