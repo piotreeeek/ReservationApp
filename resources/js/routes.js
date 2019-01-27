@@ -5,6 +5,8 @@ import AccessoryComponent from "./components/AccessoryComponent";
 import ListAccessoriesComponent from "./components/ListAccessoriesComponent";
 import ListWorkplacesComponent from "./components/ListWorkplacesComponent";
 import WorkplaceComponent from "./components/WorkplaceComponent";
+import ListUsersComponent from "./components/ListUsersComponent";
+import UserComponent from "./components/UserComponent";
 let routes = [
     {
         path: '/types',
@@ -35,6 +37,16 @@ let routes = [
         path: '/workplace',
         name: 'workplace',
         component: WorkplaceComponent
+    },
+    {
+        path: '/users',
+        name: 'users',
+        component: ListUsersComponent
+    },
+    {
+        path: '/user',
+        name: 'user',
+        component: UserComponent
     },
 ];
 

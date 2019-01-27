@@ -34,7 +34,12 @@
                         <router-link tag="li" :to="{ name: 'workplace' }">
                             <a class="nav-link">Create workplace</a>
                         </router-link>
-
+                        <router-link tag="li" :to="{ name: 'users' }">
+                            <a class="nav-link">Users</a>
+                        </router-link>
+                        <router-link tag="li" :to="{ name: 'user' }">
+                            <a class="nav-link">Create user</a>
+                        </router-link>
                     </ul>
                 </div>
             </div>

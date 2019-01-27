@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Reservation;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController extends Controller
+class ReservationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['reservations'])->get();
+        $reservations = Reservation::with(['user', 'workplace'])->get();
 
-        return response()->json($users, Response::HTTP_OK);
+        return response()->json($reservations, Response::HTTP_OK);
     }
 
     /**
@@ -38,17 +38,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $lastSameWorkplaceReservation = Reservation::where('workplace_id', $request->get('workplace_id'))
+                                                    ->orderBy('end_time', 'desc')
+                                                    ->first();
+
         $request->validate([
-            'name' => 'required',
-            'surname' => 'required',
-            'phone' => 'required|regex:/(48)[0-9]{9}/',
-            'description' => 'required|min:5',
-            'email' => 'required|email|unique:users'
+            'user_id' => 'required',
+            'workplace_id' => 'required',
+            'start_time' => 'required|date_format:Y-m-d H:i:s|after:' . $lastSameWorkplaceReservation->end_time,
+            'end_time' => 'required|date_format:Y-m-d H:i:s|after:start_date',
         ]);
 
-        $user = User::create($request->all());
+        $reservation = Reservation::create($request->all());
 
-        return response()->json($user, Response::HTTP_CREATED);
+        return response()->json($reservation, Response::HTTP_CREATED);
     }
 
     /**
@@ -59,11 +62,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        if (!$user = User::with(['reservations'])->find($id)) {
-            return response()->json(['error' => 'No user for provided id.'], Response::HTTP_NOT_FOUND);
+        if (!$reservation = Reservation::with(['user', 'workplace'])->find($id)) {
+            return response()->json(['error' => 'No reservation for provided id.'], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json($user, Response::HTTP_OK);
+        return response()->json($reservation, Response::HTTP_OK);
     }
 
     /**
@@ -86,24 +89,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'No user for provided id.'], Response::HTTP_NOT_FOUND);
-        }
-
-        $request->validate([
-            'name' => 'required',
-            'surname' => 'required',
-            'phone' => 'required|regex:/(48)[0-9]{9}/',
-            'description' => 'required|min:5',
-            'email' => 'required|email|unique:users,email,' . $user->id . ',id'
-        ]);
-
-        $user->fill($request->all());
-        $user->save();
-
-        return response()->json($user, Response::HTTP_OK);
+        //
     }
 
     /**
@@ -112,9 +98,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Reservation $reservation)
     {
-        $user->delete();
+        $reservation->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
