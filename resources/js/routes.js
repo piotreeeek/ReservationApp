@@ -7,6 +7,8 @@ import ListWorkplacesComponent from "./components/ListWorkplacesComponent";
 import WorkplaceComponent from "./components/WorkplaceComponent";
 import ListUsersComponent from "./components/ListUsersComponent";
 import UserComponent from "./components/UserComponent";
+import ListReservationsComponent from "./components/ListReservationsComponent";
+import ReservationComponent from "./components/ReservationComponent";
 let routes = [
     {
         path: '/types',
@@ -48,10 +50,21 @@ let routes = [
         name: 'user',
         component: UserComponent
     },
+    {
+        path: '/reservations',
+        name: 'reservations',
+        component: ListReservationsComponent
+    },
+    {
+        path: '/reservation',
+        name: 'reservation',
+        component: ReservationComponent
+    },
 ];
 
 const router = new VueRouter({
-    routes
+    routes,
+    linkActiveClass: "active"
 });
 
 export default router;

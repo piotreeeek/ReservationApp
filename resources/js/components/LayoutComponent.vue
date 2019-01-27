@@ -15,7 +15,12 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
-
+                        <router-link tag="li" :to="{ name: 'reservations' }">
+                            <a class="nav-link">Reservations</a>
+                        </router-link>
+                        <router-link tag="li" :to="{ name: 'reservation' }">
+                            <a class="nav-link">Create reservation</a>
+                        </router-link>
                         <router-link tag="li" :to="{ name: 'types' }">
                             <a class="nav-link">Types</a>
                         </router-link>

@@ -96,7 +96,7 @@ class AccessoryController extends Controller
 
         $request->validate([
             'model' => 'required',
-            'type_id' => 'exists:types,id',
+            'type_id' => 'required|exists:types,id',
             'mark' => 'required|max:100|unique:accessories,mark,' . $accessory->id . ',id',
             'purchase_year' => 'required|digits:4|integer|min:1900|max:'.\Carbon\Carbon::tomorrow()->year,
             'value' => "required|regex:/^\d*(\.\d{1,2})?$/",

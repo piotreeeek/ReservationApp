@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //Route::resource('/accessories', 'AccessoryController', [
 //    'except' => ['edit', 'show', 'store']
 //]);
+Route::resource('/reservations', 'ReservationController');
 Route::resource('/accessories', 'AccessoryController');
 Route::resource('/types', 'TypeController');
 Route::resource('/workplaces', 'WorkplaceController');

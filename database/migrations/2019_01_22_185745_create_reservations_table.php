@@ -17,11 +17,10 @@ class CreateReservationsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('workplace_id');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->dateTime('occupation_time');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('workplace_id')->references('id')->on('workplaces')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('workplace_id')->references('id')->on('workplaces');
 
             $table->timestamps();
             $table->softDeletes();

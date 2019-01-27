@@ -38,15 +38,15 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-        $lastSameWorkplaceReservation = Reservation::where('workplace_id', $request->get('workplace_id'))
-                                                    ->orderBy('end_time', 'desc')
-                                                    ->first();
+//        return response()->json($request->get('start_time'), Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $request->validate([
-            'user_id' => 'required',
-            'workplace_id' => 'required',
-            'start_time' => 'required|date_format:Y-m-d H:i:s|after:' . $lastSameWorkplaceReservation->end_time,
-            'end_time' => 'required|date_format:Y-m-d H:i:s|after:start_date',
+            'user_id' => 'required|exists:users,id',
+            'workplace_id' => 'required|exists:workplaces,id',
+            'occupation_time' => 'required|date_format:Y-m-d\TH:00|after:' .
+                \Carbon\Carbon::now() . '|unique:reservations,occupation_time,NULL,id,deleted_at,NULL,workplace_id,' .
+            $request->get('workplace_id')
+
         ]);
 
         $reservation = Reservation::create($request->all());

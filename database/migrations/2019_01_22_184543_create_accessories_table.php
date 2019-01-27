@@ -28,9 +28,7 @@ class CreateAccessoriesTable extends Migration
             $table->foreign('type_id')
                 ->references('id')->on('types');
             $table->foreign('workplace_id')
-                ->references('id')->on('workplaces')
-                ->onDelete('set null')
-                ->onUpdate('cascade');
+                ->references('id')->on('workplaces');
         });
     }
 
