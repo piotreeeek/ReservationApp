@@ -2194,6 +2194,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2210,26 +2217,38 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this.workplaces = response.data;
         console.log(response);
+      }).catch(function (error) {
+        console.log(error.response);
       });
     },
-    deleteWorkplaces: function deleteWorkplaces(id) {
+    deleteWorkplace: function deleteWorkplace(id) {
       var _this2 = this;
 
       window.axios({
         method: 'delete',
         url: '/api/workplaces/' + id
       }).then(function (response) {
-        _this2.readTypes();
+        Event.$emit('clearAddEditComponent');
+
+        _this2.readWorkplaces();
 
         console.log(response);
       }).catch(function (error) {
         console.log(error.response);
       });
+    },
+    editWorkplace: function editWorkplace(workplaceId) {
+      Event.$emit('editWorkplace', workplaceId);
     }
   },
   mounted: function mounted() {
+    var _this3 = this;
+
     console.log('Component mounted.');
     this.readWorkplaces();
+    Event.$on('refreshWorkplacesTable', function () {
+      _this3.readWorkplaces();
+    });
   }
 });
 
@@ -2370,6 +2389,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2378,32 +2399,77 @@ __webpack_require__.r(__webpack_exports__);
         description: ''
       },
       errors: false,
-      success: false
+      success: false,
+      editing: false,
+      editWorkplaceId: ''
     };
   },
   methods: {
     save: function save() {
       var _this = this;
 
+      var method = this.editing ? 'put' : 'post';
+      var url = this.editing ? '/api/workplaces/' + this.editWorkplaceId : '/api/workplaces';
       window.axios({
-        method: 'post',
-        url: '/api/workplaces',
+        method: method,
+        url: url,
         data: this.workplace
       }).then(function (response) {
         console.log(response);
-        _this.success = "Added new Workplace";
-        setTimeout(function () {
-          _this.success = false;
-        }, 3000);
-        _this.errors = false;
+
+        if (response.status === 201 || response.status === 200) {
+          _this.success = response.status === 200 ? "Save edited workplace." : "Added new workplace";
+
+          _this.clearComponent();
+
+          setTimeout(function () {
+            _this.success = false;
+          }, 3000);
+          Event.$emit('refreshWorkplacesTable');
+        }
       }).catch(function (error) {
         console.log(error.response.data);
         _this.errors = error.response.data.errors;
       });
+    },
+    setEditingWorkplace: function setEditingWorkplace(editWorkplaceId) {
+      var _this2 = this;
+
+      window.axios({
+        method: 'get',
+        url: 'api/workplaces/' + editWorkplaceId
+      }).then(function (response) {
+        console.log(response.data);
+        _this2.editing = true;
+        _this2.workplace = {
+          mark: response.data.mark,
+          description: response.data.description
+        };
+        _this2.editWorkplaceId = editWorkplaceId;
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+    clearComponent: function clearComponent() {
+      this.errors = false;
+      this.workplace = {
+        mark: '',
+        description: ''
+      };
+      this.editing = false;
+      this.editWorkplaceId = '';
     }
   },
   mounted: function mounted() {
+    var _this3 = this;
+
     console.log('Component mounted.');
+    Event.$on('editWorkplace', function (editWorkplaceId) {
+      _this3.setEditingWorkplace(editWorkplaceId);
+    });
+    Event.$on('clearAddEditComponent', function () {
+      _this3.clearComponent();
+    });
   }
 });
 
@@ -37868,34 +37934,54 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("table", { staticClass: "table" }, [
-      _vm._m(0),
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c("workplace-component"),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.workplaces, function(workplace) {
-          return _c("tr", [
-            _c("td", [_vm._v(_vm._s(workplace.mark))]),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      _vm.deleteWorkplaces(workplace.id)
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.workplaces, function(workplace) {
+            return _c("tr", [
+              _c("td", [_vm._v(_vm._s(workplace.mark))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.deleteWorkplace(workplace.id)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Delete")]
-              )
+                  },
+                  [_vm._v("Delete")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.editWorkplace(workplace.id)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                )
+              ])
             ])
-          ])
-        }),
-        0
-      )
-    ])
-  ])
+          }),
+          0
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -38017,7 +38103,9 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
-    _c("p", [_vm._v("Create new accessory .")]),
+    _vm.editing
+      ? _c("p", [_vm._v("Edit existing workplace.")])
+      : _c("p", [_vm._v("Create new workplace.")]),
     _vm._v(" "),
     _c(
       "form",
@@ -38091,7 +38179,9 @@ var render = function() {
             : _vm._e()
         ]),
         _vm._v(" "),
-        _c("button", { staticClass: "btn" }, [_vm._v("Add")])
+        _vm.editing
+          ? _c("button", { staticClass: "btn" }, [_vm._v("Save")])
+          : _c("button", { staticClass: "btn" }, [_vm._v("Add")])
       ]
     )
   ])
@@ -52024,6 +52114,7 @@ window.Event = new Vue();
 Vue.component('layout-component', __webpack_require__(/*! ./components/LayoutComponent */ "./resources/js/components/LayoutComponent.vue").default);
 Vue.component('type-component', __webpack_require__(/*! ./components/TypeComponent */ "./resources/js/components/TypeComponent.vue").default);
 Vue.component('accessory-component', __webpack_require__(/*! ./components/AccessoryComponent */ "./resources/js/components/AccessoryComponent.vue").default);
+Vue.component('workplace-component', __webpack_require__(/*! ./components/WorkplaceComponent */ "./resources/js/components/WorkplaceComponent.vue").default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

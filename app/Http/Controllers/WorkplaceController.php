@@ -39,7 +39,7 @@ class WorkplaceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'mark' => 'required|max:100|unique:accessories',
+            'mark' => 'required|max:100|unique:workplaces',
             'description' => 'required|min:5'
 
         ]);
@@ -58,7 +58,11 @@ class WorkplaceController extends Controller
      */
     public function show($id)
     {
-        //
+        if(!$workplace = Workplace::with('accessories')->find($id)){
+           return response()->json(['error' => 'No workplace for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($workplace, Response::HTTP_OK);
     }
 
     /**
@@ -81,7 +85,21 @@ class WorkplaceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $workplace = Workplace::find($id);
+
+        if (!$workplace) {
+            return response()->json(['error' => 'No workplace for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+
+        $request->validate([
+            'mark' => 'required|max:100|unique:workplaces,mark,' . $workplace->id . ',id',
+            'description' => 'required|min:5'
+        ]);
+
+        $workplace->fill($request->all());
+        $workplace->save();
+
+        return response()->json($workplace, Response::HTTP_OK);
     }
 
     /**

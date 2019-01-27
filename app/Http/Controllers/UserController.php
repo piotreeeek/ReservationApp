@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Type;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-class TypeController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +13,7 @@ class TypeController extends Controller
      */
     public function index()
     {
-        $types = Type::with('accessories')->get();
-
-        return response()->json($types, Response::HTTP_OK);
+        //
     }
 
     /**
@@ -25,11 +21,9 @@ class TypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
         //
-
-
     }
 
     /**
@@ -40,15 +34,7 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|max:50|unique:types'
-        ]);
-
-        $type = new Type();
-        $type->name = $request->input('name');
-        $type->save();
-
-        return response()->json($type, Response::HTTP_CREATED);
+        //
     }
 
     /**
@@ -59,11 +45,7 @@ class TypeController extends Controller
      */
     public function show($id)
     {
-        if (!$type = Type::with('accessories')->find($id)) {
-            return response()->json(['error' => 'No type for provided id.'], Response::HTTP_NOT_FOUND);
-        }
-
-        return response()->json($type, Response::HTTP_OK);
+        //
     }
 
     /**
@@ -86,20 +68,7 @@ class TypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $type = Type::find($id);
-
-        if (!$type) {
-            return response()->json(['error' => 'No type for provided id.'], Response::HTTP_NOT_FOUND);
-        }
-
-        $request->validate([
-            'name' => 'required|max:50|unique:types,name,' . $type->id . ',id'
-        ]);
-
-        $type->fill($request->all());
-        $type->save();
-
-        return response()->json($type, Response::HTTP_OK);
+        //
     }
 
     /**
@@ -108,10 +77,8 @@ class TypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Type $type)
+    public function destroy($id)
     {
-        $type->delete();
-
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        //
     }
 }

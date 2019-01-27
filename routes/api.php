@@ -23,3 +23,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('/accessories', 'AccessoryController');
 Route::resource('/types', 'TypeController');
 Route::resource('/workplaces', 'WorkplaceController');
+Route::resource('/users', 'UserController');
