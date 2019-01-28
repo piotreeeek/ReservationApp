@@ -88,6 +88,23 @@
                     console.log(response)
                 });
             },
+            setEditingReservation: function (editReservationId) {
+                window.axios({
+                    method: 'get',
+                    url: 'api/reservations/' + editReservationId
+                }).then(response => {
+                    console.log(response.data)
+                    this.editing = true;
+                    this.reservation = {
+                        user_id: response.data.user_id,
+                        workplace_id: response.data.workplace_id,
+                        occupation_time: response.data.occupation_time.replace(' ', 'T').slice(0, 16)
+                    }
+                    this.editReservationId = editReservationId
+                }).catch(error => {
+                    console.log(error.response)
+                })
+            },
             clearComponent: function () {
                 this.errors = false
                 this.reservation = {
@@ -104,9 +121,9 @@
             this.fetchWorkplaces()
             this.fetchUsers()
 
-            // Event.$on('editAccessory', (editAccessoryId) => {
-            //     this.setEditingAccessory(editAccessoryId);
-            // })
+            Event.$on('editReservation', (editReservationId) => {
+                this.setEditingReservation(editReservationId);
+            })
             Event.$on('clearAddEditComponent', () =>{
                 this.clearComponent();
             })

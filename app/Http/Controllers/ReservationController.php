@@ -46,7 +46,6 @@ class ReservationController extends Controller
             'occupation_time' => 'required|date_format:Y-m-d\TH:00|after:' .
                 \Carbon\Carbon::now() . '|unique:reservations,occupation_time,NULL,id,deleted_at,NULL,workplace_id,' .
             $request->get('workplace_id')
-
         ]);
 
         $reservation = Reservation::create($request->all());
@@ -89,7 +88,24 @@ class ReservationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $reservation = Reservation::find($id);
+
+        if (!$reservation) {
+            return response()->json(['error' => 'No reservation for provided id.'], Response::HTTP_NOT_FOUND);
+        }
+//        return response()->json($request->get('occupation_time'), Response::HTTP_UNPROCESSABLE_ENTITY);
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'workplace_id' => 'required|exists:workplaces,id',
+            'occupation_time' => 'required|date_format:Y-m-d\TH:00|after:' .
+                \Carbon\Carbon::now() . '|unique:reservations,occupation_time,'. $reservation->id . ',id,deleted_at,NULL,workplace_id,' .
+                $request->get('workplace_id')
+        ]);
+
+        $reservation->fill($request->all());
+        $reservation->save();
+
+        return response()->json($reservation, Response::HTTP_OK);
     }
 
     /**

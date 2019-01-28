@@ -1993,21 +1993,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "LayoutComponent"
 });
@@ -2130,6 +2115,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2164,10 +2151,10 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(function (error) {
         console.log(error.response);
       });
-    } // editUser: function(id) {
-    //     Event.$emit('editUser', id)
-    // }
-
+    },
+    editReservation: function editReservation(id) {
+      Event.$emit('editReservation', id);
+    }
   },
   mounted: function mounted() {
     var _this3 = this;
@@ -2377,6 +2364,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2536,6 +2542,25 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
       });
     },
+    setEditingReservation: function setEditingReservation(editReservationId) {
+      var _this4 = this;
+
+      window.axios({
+        method: 'get',
+        url: 'api/reservations/' + editReservationId
+      }).then(function (response) {
+        console.log(response.data);
+        _this4.editing = true;
+        _this4.reservation = {
+          user_id: response.data.user_id,
+          workplace_id: response.data.workplace_id,
+          occupation_time: response.data.occupation_time.replace(' ', 'T').slice(0, 16)
+        };
+        _this4.editReservationId = editReservationId;
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
     clearComponent: function clearComponent() {
       this.errors = false;
       this.reservation = {
@@ -2548,16 +2573,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this5 = this;
 
     console.log('Component mounted.');
     this.fetchWorkplaces();
-    this.fetchUsers(); // Event.$on('editAccessory', (editAccessoryId) => {
-    //     this.setEditingAccessory(editAccessoryId);
-    // })
-
+    this.fetchUsers();
+    Event.$on('editReservation', function (editReservationId) {
+      _this5.setEditingReservation(editReservationId);
+    });
     Event.$on('clearAddEditComponent', function () {
-      _this4.clearComponent();
+      _this5.clearComponent();
     });
   }
 });
@@ -38115,28 +38140,8 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "router-link",
-                    { attrs: { tag: "li", to: { name: "reservation" } } },
-                    [
-                      _c("a", { staticClass: "nav-link" }, [
-                        _vm._v("Create reservation")
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
                     { attrs: { tag: "li", to: { name: "types" } } },
                     [_c("a", { staticClass: "nav-link" }, [_vm._v("Types")])]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
-                    { attrs: { tag: "li", to: { name: "type" } } },
-                    [
-                      _c("a", { staticClass: "nav-link" }, [
-                        _vm._v("Create type")
-                      ])
-                    ]
                   ),
                   _vm._v(" "),
                   _c(
@@ -38145,16 +38150,6 @@ var render = function() {
                     [
                       _c("a", { staticClass: "nav-link" }, [
                         _vm._v("Accessories")
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
-                    { attrs: { tag: "li", to: { name: "accessory" } } },
-                    [
-                      _c("a", { staticClass: "nav-link" }, [
-                        _vm._v("Create accessory")
                       ])
                     ]
                   ),
@@ -38171,28 +38166,8 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "router-link",
-                    { attrs: { tag: "li", to: { name: "workplace" } } },
-                    [
-                      _c("a", { staticClass: "nav-link" }, [
-                        _vm._v("Create workplace")
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
                     { attrs: { tag: "li", to: { name: "users" } } },
                     [_c("a", { staticClass: "nav-link" }, [_vm._v("Users")])]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "router-link",
-                    { attrs: { tag: "li", to: { name: "user" } } },
-                    [
-                      _c("a", { staticClass: "nav-link" }, [
-                        _vm._v("Create user")
-                      ])
-                    ]
                   )
                 ],
                 1
@@ -38255,7 +38230,7 @@ var render = function() {
     [
       _c("accessory-component"),
       _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
+      _c("table", { staticClass: "table table-bordered" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
@@ -38337,58 +38312,69 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("table", { staticClass: "table" }, [
-      _vm._m(0),
+  return _c(
+    "div",
+    { staticClass: "container" },
+    [
+      _c("reservation-component"),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.reservations, function(reservation) {
-          return _c("tr", [
-            _c("td", [
-              _vm._v(
-                _vm._s(reservation.user.name) +
-                  " " +
-                  _vm._s(reservation.user.surname) +
-                  " "
-              )
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(reservation.workplace.mark))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(reservation.occupation_time))]),
-            _vm._v(" "),
-            _c("td", [
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      _vm.deleteReservation(reservation.id)
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              ),
+      _c("table", { staticClass: "table table-bordered" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.reservations, function(reservation) {
+            return _c("tr", [
+              _c("td", [
+                _vm._v(
+                  _vm._s(reservation.user.name) +
+                    " " +
+                    _vm._s(reservation.user.surname) +
+                    " "
+                )
+              ]),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      _vm.editReservation(reservation.id)
+              _c("td", [_vm._v(_vm._s(reservation.user.email))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(reservation.workplace.mark))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(reservation.occupation_time))]),
+              _vm._v(" "),
+              _c("td", [
+                new Date(reservation.occupation_time) > new Date()
+                  ? _c(
+                      "button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.deleteReservation(reservation.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.editReservation(reservation.id)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Edit")]
-              )
+                  },
+                  [_vm._v("Edit")]
+                )
+              ])
             ])
-          ])
-        }),
-        0
-      )
-    ])
-  ])
+          }),
+          0
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -38397,8 +38383,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("User")]),
-        _c("th", [_vm._v("Workplace")]),
+        _c("th", [_vm._v("User name")]),
+        _c("th", [_vm._v("User email")]),
+        _c("th", [_vm._v("Workplace mark")]),
         _c("th", [_vm._v("Occupation time")]),
         _c("th", [_vm._v("Options")])
       ])
@@ -38432,7 +38419,7 @@ var render = function() {
     [
       _c("type-component"),
       _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
+      _c("table", { staticClass: "table table-bordered" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
@@ -38514,7 +38501,7 @@ var render = function() {
     [
       _c("user-component"),
       _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
+      _c("table", { staticClass: "table table-bordered" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
@@ -38526,17 +38513,19 @@ var render = function() {
               _c("td", [_vm._v(_vm._s(user.email))]),
               _vm._v(" "),
               _c("td", [
-                _c(
-                  "button",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.deleteUser(user.id)
-                      }
-                    }
-                  },
-                  [_vm._v("Delete")]
-                ),
+                user.reservations.length === 0
+                  ? _c(
+                      "button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.deleteUser(user.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -38600,7 +38589,7 @@ var render = function() {
     [
       _c("workplace-component"),
       _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
+      _c("table", { staticClass: "table table-bordered" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
@@ -38609,18 +38598,42 @@ var render = function() {
             return _c("tr", [
               _c("td", [_vm._v(_vm._s(workplace.mark))]),
               _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(workplace.description))]),
+              _vm._v(" "),
               _c("td", [
-                _c(
-                  "button",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.deleteWorkplace(workplace.id)
-                      }
-                    }
-                  },
-                  [_vm._v("Delete")]
-                ),
+                _c("table", { staticClass: "table table-bordered" }, [
+                  _vm._m(1, true),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(workplace.accessories, function(accessory) {
+                      return _c("tr", [
+                        _c("td", [_vm._v(_vm._s(accessory.model))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(accessory.mark))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(accessory.value))])
+                      ])
+                    }),
+                    0
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("td", [
+                workplace.accessories.length === 0
+                  ? _c(
+                      "button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.deleteWorkplace(workplace.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -38649,7 +38662,26 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", [
-      _c("tr", [_c("th", [_vm._v("Mark")]), _c("th", [_vm._v("Options")])])
+      _c("tr", [
+        _c("th", [_vm._v("Mark")]),
+        _c("th", [_vm._v("Description")]),
+        _c("td", [_vm._v("Accessories")]),
+        _c("th", [_vm._v("Options")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Model")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Mark")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Value")])
+      ])
     ])
   }
 ]
@@ -53161,6 +53193,7 @@ Vue.component('type-component', __webpack_require__(/*! ./components/TypeCompone
 Vue.component('accessory-component', __webpack_require__(/*! ./components/AccessoryComponent */ "./resources/js/components/AccessoryComponent.vue").default);
 Vue.component('workplace-component', __webpack_require__(/*! ./components/WorkplaceComponent */ "./resources/js/components/WorkplaceComponent.vue").default);
 Vue.component('user-component', __webpack_require__(/*! ./components/UserComponent */ "./resources/js/components/UserComponent.vue").default);
+Vue.component('reservation-component', __webpack_require__(/*! ./components/ReservationComponent */ "./resources/js/components/ReservationComponent.vue").default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

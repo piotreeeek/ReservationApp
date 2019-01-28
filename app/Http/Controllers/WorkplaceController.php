@@ -15,7 +15,7 @@ class WorkplaceController extends Controller
      */
     public function index()
     {
-        $workplaces = Workplace::all();
+        $workplaces = Workplace::with('accessories')->get();
 
         return response()->json($workplaces, Response::HTTP_OK);
     }

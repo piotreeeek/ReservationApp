@@ -18,32 +18,17 @@
                         <router-link tag="li" :to="{ name: 'reservations' }">
                             <a class="nav-link">Reservations</a>
                         </router-link>
-                        <router-link tag="li" :to="{ name: 'reservation' }">
-                            <a class="nav-link">Create reservation</a>
-                        </router-link>
                         <router-link tag="li" :to="{ name: 'types' }">
                             <a class="nav-link">Types</a>
-                        </router-link>
-                        <router-link tag="li" :to="{ name: 'type' }">
-                            <a class="nav-link">Create type</a>
                         </router-link>
                         <router-link tag="li" :to="{ name: 'accessories' }">
                             <a class="nav-link">Accessories</a>
                         </router-link>
-                        <router-link tag="li" :to="{ name: 'accessory' }">
-                            <a class="nav-link">Create accessory</a>
-                        </router-link>
                         <router-link tag="li" :to="{ name: 'workplaces' }">
                             <a class="nav-link">Workplaces</a>
                         </router-link>
-                        <router-link tag="li" :to="{ name: 'workplace' }">
-                            <a class="nav-link">Create workplace</a>
-                        </router-link>
                         <router-link tag="li" :to="{ name: 'users' }">
                             <a class="nav-link">Users</a>
-                        </router-link>
-                        <router-link tag="li" :to="{ name: 'user' }">
-                            <a class="nav-link">Create user</a>
                         </router-link>
                     </ul>
                 </div>

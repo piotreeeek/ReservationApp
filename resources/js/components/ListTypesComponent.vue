@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <type-component></type-component>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr><th>Name</th><th>Options</th></tr>
             </thead>

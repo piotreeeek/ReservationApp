@@ -1,16 +1,18 @@
 <template>
     <div class="container">
-        <table class="table">
+        <reservation-component></reservation-component>
+        <table class="table table-bordered">
             <thead>
-            <tr><th>User</th><th>Workplace</th><th>Occupation time</th><th>Options</th></tr>
+            <tr><th>User name</th><th>User email</th><th>Workplace mark</th><th>Occupation time</th><th>Options</th></tr>
             </thead>
             <tbody>
             <tr v-for="reservation in reservations">
                 <td>{{ reservation.user.name }} {{reservation.user.surname}} </td>
+                <td>{{ reservation.user.email }}</td>
                 <td>{{ reservation.workplace.mark }}</td>
                 <td>{{ reservation.occupation_time }}</td>
                 <td>
-                    <button @click="deleteReservation(reservation.id)">Delete</button>
+                    <button v-if="new Date(reservation.occupation_time) > new Date()" @click="deleteReservation(reservation.id)">Delete</button>
                     <button @click="editReservation(reservation.id)">Edit</button>
                 </td>
             </tr>
@@ -51,9 +53,9 @@
                     console.log(error.response)
                 });
             },
-            // editUser: function(id) {
-            //     Event.$emit('editUser', id)
-            // }
+            editReservation: function(id) {
+                Event.$emit('editReservation', id)
+            }
         },
         mounted() {
             console.log('Component mounted.')

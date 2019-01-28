@@ -28,6 +28,7 @@ Vue.component('type-component', require('./components/TypeComponent').default);
 Vue.component('accessory-component', require('./components/AccessoryComponent').default);
 Vue.component('workplace-component', require('./components/WorkplaceComponent').default);
 Vue.component('user-component', require('./components/UserComponent').default);
+Vue.component('reservation-component', require('./components/ReservationComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

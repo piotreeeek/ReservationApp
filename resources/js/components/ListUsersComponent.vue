@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <user-component></user-component>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr><th>Name</th><th>Email</th><th>Options</th></tr>
             </thead>
@@ -10,7 +10,7 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
                 <td>
-                    <button @click="deleteUser(user.id)">Delete</button>
+                    <button v-if="user.reservations.length === 0" @click="deleteUser(user.id)">Delete</button>
                     <button @click="editUser(user.id)">Edit</button>
                 </td>
             </tr>
