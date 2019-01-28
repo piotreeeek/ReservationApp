@@ -51,10 +51,7 @@
                     method: 'get',
                     url: '/api/workplaces'
                 }).then(response => {
-                    this.workplaces = response.data
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error.response)
+                    this.workplaces = response.data;
                 });
             },
             deleteWorkplace: function (id) {
@@ -64,9 +61,6 @@
                 }).then(response => {
                     Event.$emit('clearAddEditComponent');
                     this.readWorkplaces()
-                    console.log(response);
-                }).catch(error => {
-                    console.log(error.response)
                 });
             },
             editWorkplace: function (workplaceId) {

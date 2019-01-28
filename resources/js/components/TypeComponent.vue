@@ -37,7 +37,6 @@
                     url: url,
                     data: this.type
                 }).then(response => {
-                    console.log(response)
                     if(response.status === 201 || response.status === 200) {
                         this.success = response.status === 200 ? "Save edited type." : "Added new Type";
                         this.clearComponent();
@@ -48,7 +47,6 @@
                         Event.$emit('refreshTypesTable')
                     }
                 }).catch(error => {
-                    console.log(error.response)
                     this.errors = error.response.data.errors;
                 })
             },
@@ -57,13 +55,10 @@
                     method: 'get',
                     url: 'api/types/' + editTypeId
                 }).then(response => {
-                    console.log(response.data)
                     this.editing = true;
-                    this.type.name = response.data.name
-                    this.editTypeId = editTypeId
-                }).catch(error => {
-                    console.log(error.response)
-                })
+                    this.type.name = response.data.name;
+                    this.editTypeId = editTypeId;
+                });
             },
             clearComponent: function () {
                 this.errors = false

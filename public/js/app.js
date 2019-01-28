@@ -1847,8 +1847,6 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: this.accessory
       }).then(function (response) {
-        console.log(response);
-
         if (response.status === 201 || response.status === 200) {
           _this.success = response.status === 200 ? "Save edited accessory." : "Added new accessory";
 
@@ -1860,7 +1858,6 @@ __webpack_require__.r(__webpack_exports__);
           Event.$emit('refreshAccessoriesTable');
         }
       }).catch(function (error) {
-        console.log(error.response.data);
         _this.errors = error.response.data.errors;
       });
     },
@@ -1872,7 +1869,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/types'
       }).then(function (response) {
         _this2.types = response.data;
-        console.log(response);
       });
     },
     fetchWorkplaces: function fetchWorkplaces() {
@@ -1883,7 +1879,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/workplaces'
       }).then(function (response) {
         _this3.workplaces = response.data;
-        console.log(response);
       });
     },
     setEditingAccessory: function setEditingAccessory(editAccessoryId) {
@@ -1893,7 +1888,6 @@ __webpack_require__.r(__webpack_exports__);
         method: 'get',
         url: 'api/accessories/' + editAccessoryId
       }).then(function (response) {
-        console.log(response.data);
         _this4.editing = true;
         _this4.accessory = {
           type_id: response.data.type_id,
@@ -1905,8 +1899,6 @@ __webpack_require__.r(__webpack_exports__);
           description: response.data.description
         };
         _this4.editAccessoryId = editAccessoryId;
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     clearComponent: function clearComponent() {
@@ -2045,9 +2037,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/accessories'
       }).then(function (response) {
         _this.accessories = response.data;
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error.data);
       });
     },
     deleteAccessory: function deleteAccessory(id) {
@@ -2057,14 +2046,9 @@ __webpack_require__.r(__webpack_exports__);
         method: 'delete',
         url: '/api/accessories/' + id
       }).then(function (response) {
-        console.log(response);
         Event.$emit('clearAddEditComponent');
 
         _this2.readAccessories();
-
-        console.log("aktualka");
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     editAccessory: function editAccessory(accessoryId) {
@@ -2132,9 +2116,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/reservations'
       }).then(function (response) {
         _this.reservations = response.data;
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error.data);
       });
     },
     deleteReservation: function deleteReservation(id) {
@@ -2144,12 +2125,9 @@ __webpack_require__.r(__webpack_exports__);
         method: 'delete',
         url: '/api/reservations/' + id
       }).then(function (response) {
-        console.log(response);
         Event.$emit('clearAddEditComponent');
 
         _this2.readReservations();
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     editReservation: function editReservation(id) {
@@ -2214,9 +2192,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/types'
       }).then(function (response) {
         _this.types = response.data;
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     deleteType: function deleteType(id) {
@@ -2226,12 +2201,9 @@ __webpack_require__.r(__webpack_exports__);
         method: 'delete',
         url: '/api/types/' + id
       }).then(function (response) {
-        console.log(response);
         Event.$emit('clearAddEditComponent');
 
         _this2.readTypes();
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     editType: function editType(typeId) {
@@ -2297,9 +2269,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/users'
       }).then(function (response) {
         _this.users = response.data;
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error.data);
       });
     },
     deleteUser: function deleteUser(id) {
@@ -2309,12 +2278,9 @@ __webpack_require__.r(__webpack_exports__);
         method: 'delete',
         url: '/api/users/' + id
       }).then(function (response) {
-        console.log(response);
         Event.$emit('clearAddEditComponent');
 
         _this2.readUsers();
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     editUser: function editUser(id) {
@@ -2398,9 +2364,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/workplaces'
       }).then(function (response) {
         _this.workplaces = response.data;
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     deleteWorkplace: function deleteWorkplace(id) {
@@ -2413,10 +2376,6 @@ __webpack_require__.r(__webpack_exports__);
         Event.$emit('clearAddEditComponent');
 
         _this2.readWorkplaces();
-
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     editWorkplace: function editWorkplace(workplaceId) {
@@ -2503,8 +2462,6 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: this.reservation
       }).then(function (response) {
-        console.log(response);
-
         if (response.status === 201 || response.status === 200) {
           _this.success = response.status === 200 ? "Save edited reservation." : "Added new reservation";
 
@@ -2516,7 +2473,6 @@ __webpack_require__.r(__webpack_exports__);
           Event.$emit('refreshReservationsTable');
         }
       }).catch(function (error) {
-        console.log(error.response.data);
         _this.errors = error.response.data.errors;
       });
     },
@@ -2528,7 +2484,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/users'
       }).then(function (response) {
         _this2.users = response.data;
-        console.log(response);
       });
     },
     fetchWorkplaces: function fetchWorkplaces() {
@@ -2539,7 +2494,6 @@ __webpack_require__.r(__webpack_exports__);
         url: '/api/workplaces'
       }).then(function (response) {
         _this3.workplaces = response.data;
-        console.log(response);
       });
     },
     setEditingReservation: function setEditingReservation(editReservationId) {
@@ -2549,7 +2503,6 @@ __webpack_require__.r(__webpack_exports__);
         method: 'get',
         url: 'api/reservations/' + editReservationId
       }).then(function (response) {
-        console.log(response.data);
         _this4.editing = true;
         _this4.reservation = {
           user_id: response.data.user_id,
@@ -2557,8 +2510,6 @@ __webpack_require__.r(__webpack_exports__);
           occupation_time: response.data.occupation_time.replace(' ', 'T').slice(0, 16)
         };
         _this4.editReservationId = editReservationId;
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     clearComponent: function clearComponent() {
@@ -2638,8 +2589,6 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: this.type
       }).then(function (response) {
-        console.log(response);
-
         if (response.status === 201 || response.status === 200) {
           _this.success = response.status === 200 ? "Save edited type." : "Added new Type";
 
@@ -2651,7 +2600,6 @@ __webpack_require__.r(__webpack_exports__);
           Event.$emit('refreshTypesTable');
         }
       }).catch(function (error) {
-        console.log(error.response);
         _this.errors = error.response.data.errors;
       });
     },
@@ -2662,12 +2610,9 @@ __webpack_require__.r(__webpack_exports__);
         method: 'get',
         url: 'api/types/' + editTypeId
       }).then(function (response) {
-        console.log(response.data);
         _this2.editing = true;
         _this2.type.name = response.data.name;
         _this2.editTypeId = editTypeId;
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     clearComponent: function clearComponent() {
@@ -2767,8 +2712,6 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: this.user
       }).then(function (response) {
-        console.log(response);
-
         if (response.status === 201 || response.status === 200) {
           _this.success = response.status === 200 ? "Save edited user." : "Added new user";
 
@@ -2780,7 +2723,6 @@ __webpack_require__.r(__webpack_exports__);
           Event.$emit('refreshUsersTable');
         }
       }).catch(function (error) {
-        console.log(error.response.data);
         _this.errors = error.response.data.errors;
       });
     },
@@ -2791,7 +2733,6 @@ __webpack_require__.r(__webpack_exports__);
         method: 'get',
         url: 'api/users/' + editUserId
       }).then(function (response) {
-        console.log(response.data);
         _this2.editing = true;
         _this2.user = {
           name: response.data.name,
@@ -2801,8 +2742,6 @@ __webpack_require__.r(__webpack_exports__);
           email: response.data.email
         };
         _this2.editUserId = editUserId;
-      }).catch(function (error) {
-        console.log(error.response);
       });
     },
     clearComponent: function clearComponent() {
@@ -2889,8 +2828,6 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: this.workplace
       }).then(function (response) {
-        console.log(response);
-
         if (response.status === 201 || response.status === 200) {
           _this.success = response.status === 200 ? "Save edited workplace." : "Added new workplace";
 
@@ -2902,7 +2839,6 @@ __webpack_require__.r(__webpack_exports__);
           Event.$emit('refreshWorkplacesTable');
         }
       }).catch(function (error) {
-        console.log(error.response.data);
         _this.errors = error.response.data.errors;
       });
     },
@@ -2913,16 +2849,13 @@ __webpack_require__.r(__webpack_exports__);
         method: 'get',
         url: 'api/workplaces/' + editWorkplaceId
       }).then(function (response) {
-        console.log(response.data);
         _this2.editing = true;
         _this2.workplace = {
           mark: response.data.mark,
           description: response.data.description
         };
         _this2.editWorkplaceId = editWorkplaceId;
-      }).catch(function (error) {
-        console.log(error.response);
-      });
+      }).catch(function (error) {});
     },
     clearComponent: function clearComponent() {
       this.errors = false;

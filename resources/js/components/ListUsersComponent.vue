@@ -34,9 +34,6 @@
                     url: '/api/users'
                 }).then(response => {
                     this.users = response.data;
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error.data);
                 });
             },
             deleteUser: function (id) {
@@ -44,11 +41,8 @@
                     method: 'delete',
                     url: '/api/users/' + id
                 }).then(response => {
-                    console.log(response);
                     Event.$emit('clearAddEditComponent');
                     this.readUsers()
-                }).catch(error => {
-                    console.log(error.response)
                 });
             },
             editUser: function(id) {

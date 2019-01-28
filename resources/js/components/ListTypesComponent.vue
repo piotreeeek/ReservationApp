@@ -33,9 +33,6 @@
                     url: '/api/types'
                 }).then(response => {
                     this.types = response.data
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error.response)
                 });
             },
             deleteType: function (id) {
@@ -43,11 +40,8 @@
                     method: 'delete',
                     url: '/api/types/' + id
                 }).then(response => {
-                    console.log(response);
                     Event.$emit('clearAddEditComponent');
                     this.readTypes()
-                }).catch(error => {
-                    console.log(error.response)
                 });
             },
             editType: function (typeId) {

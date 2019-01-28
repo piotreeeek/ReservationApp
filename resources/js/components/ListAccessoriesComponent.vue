@@ -34,9 +34,6 @@
                     url: '/api/accessories'
                 }).then(response => {
                     this.accessories = response.data;
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error.data);
                 });
             },
             deleteAccessory: function (id) {
@@ -44,12 +41,8 @@
                     method: 'delete',
                     url: '/api/accessories/' + id
                 }).then(response => {
-                    console.log(response);
                     Event.$emit('clearAddEditComponent');
                     this.readAccessories()
-                    console.log("aktualka")
-                }).catch(error => {
-                    console.log(error.response)
                 });
             },
             editAccessory: function(accessoryId) {

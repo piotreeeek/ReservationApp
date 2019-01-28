@@ -61,7 +61,6 @@
                     url: url,
                     data: this.user
                 }).then(response => {
-                    console.log(response)
                     if(response.status === 201 || response.status === 200) {
                         this.success = response.status === 200 ? "Save edited user." : "Added new user";
                         this.clearComponent();
@@ -69,10 +68,9 @@
                             this.success = false;
                         }, 3000);
 
-                        Event.$emit('refreshUsersTable')
+                        Event.$emit('refreshUsersTable');
                     }
                 }).catch(error => {
-                    console.log(error.response.data)
                     this.errors = error.response.data.errors;
                 });
             },
@@ -81,7 +79,6 @@
                     method: 'get',
                     url: 'api/users/' + editUserId
                 }).then(response => {
-                    console.log(response.data)
                     this.editing = true;
                     this.user = {
                         name: response.data.name,
@@ -89,14 +86,12 @@
                         phone: response.data.phone,
                         description: response.data.description,
                         email: response.data.email
-                    }
-                    this.editUserId = editUserId
-                }).catch(error => {
-                    console.log(error.response)
-                })
+                    };
+                    this.editUserId = editUserId;
+                });
             },
             clearComponent: function () {
-                this.errors = false
+                this.errors = false;
                 this.user = {
                     name: '',
                     surname: '',
@@ -105,11 +100,11 @@
                     email: ''
                 };
                 this.editing = false;
-                this.editUserId = ''
+                this.editUserId = '';
             }
         },
         mounted() {
-            console.log('Component mounted.')
+            console.log('Component mounted.');
 
             Event.$on('editUser', (id) => {
                 this.setEditingUser(id);

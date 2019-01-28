@@ -38,7 +38,6 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-//        return response()->json($request->get('start_time'), Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -93,7 +92,7 @@ class ReservationController extends Controller
         if (!$reservation) {
             return response()->json(['error' => 'No reservation for provided id.'], Response::HTTP_NOT_FOUND);
         }
-//        return response()->json($request->get('occupation_time'), Response::HTTP_UNPROCESSABLE_ENTITY);
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'workplace_id' => 'required|exists:workplaces,id',

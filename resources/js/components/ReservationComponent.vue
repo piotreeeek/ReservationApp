@@ -55,7 +55,6 @@
                     url: url,
                     data: this.reservation
                 }).then(response => {
-                    console.log(response)
                     if (response.status === 201 || response.status === 200) {
                         this.success = response.status === 200 ? "Save edited reservation." : "Added new reservation";
                         this.clearComponent();
@@ -66,7 +65,6 @@
                         Event.$emit('refreshReservationsTable')
                     }
                 }).catch(error => {
-                    console.log(error.response.data)
                     this.errors = error.response.data.errors;
                 });
             },
@@ -75,8 +73,7 @@
                     method: 'get',
                     url: '/api/users'
                 }).then(response => {
-                    this.users = response.data
-                    console.log(response)
+                    this.users = response.data;
                 });
             },
             fetchWorkplaces: function () {
@@ -84,8 +81,7 @@
                     method: 'get',
                     url: '/api/workplaces'
                 }).then(response => {
-                    this.workplaces = response.data
-                    console.log(response)
+                    this.workplaces = response.data;
                 });
             },
             setEditingReservation: function (editReservationId) {
@@ -93,33 +89,30 @@
                     method: 'get',
                     url: 'api/reservations/' + editReservationId
                 }).then(response => {
-                    console.log(response.data)
                     this.editing = true;
                     this.reservation = {
                         user_id: response.data.user_id,
                         workplace_id: response.data.workplace_id,
                         occupation_time: response.data.occupation_time.replace(' ', 'T').slice(0, 16)
-                    }
-                    this.editReservationId = editReservationId
-                }).catch(error => {
-                    console.log(error.response)
-                })
+                    };
+                    this.editReservationId = editReservationId;
+                });
             },
             clearComponent: function () {
-                this.errors = false
+                this.errors = false;
                 this.reservation = {
                     user_id: '',
                     workplace_id: '',
                     occupation_time: ''
                 };
                 this.editing = false;
-                this.editReservationId = ''
+                this.editReservationId = '';
             }
         },
         mounted() {
-            console.log('Component mounted.')
-            this.fetchWorkplaces()
-            this.fetchUsers()
+            console.log('Component mounted.');
+            this.fetchWorkplaces();
+            this.fetchUsers();
 
             Event.$on('editReservation', (editReservationId) => {
                 this.setEditingReservation(editReservationId);

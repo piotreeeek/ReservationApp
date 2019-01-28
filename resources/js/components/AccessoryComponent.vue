@@ -81,7 +81,6 @@
                     url: url,
                     data: this.accessory
                 }).then(response => {
-                    console.log(response)
                     if(response.status === 201 || response.status === 200) {
                         this.success = response.status === 200 ? "Save edited accessory." : "Added new accessory";
                         this.clearComponent();
@@ -92,7 +91,6 @@
                         Event.$emit('refreshAccessoriesTable')
                     }
                 }).catch(error => {
-                    console.log(error.response.data)
                     this.errors = error.response.data.errors;
                 });
             },
@@ -102,7 +100,6 @@
                     url: '/api/types'
                 }).then(response => {
                     this.types = response.data
-                    console.log(response)
                 });
             },
             fetchWorkplaces: function () {
@@ -111,7 +108,6 @@
                     url: '/api/workplaces'
                 }).then(response => {
                     this.workplaces = response.data
-                    console.log(response)
                 });
             },
             setEditingAccessory: function (editAccessoryId) {
@@ -119,7 +115,6 @@
                     method: 'get',
                     url: 'api/accessories/' + editAccessoryId
                 }).then(response => {
-                    console.log(response.data)
                     this.editing = true;
                     this.accessory = {
                         type_id: response.data.type_id,
@@ -131,9 +126,7 @@
                         description: response.data.description
                     }
                     this.editAccessoryId = editAccessoryId
-                }).catch(error => {
-                    console.log(error.response)
-                })
+                });
             },
             clearComponent: function () {
                 this.errors = false

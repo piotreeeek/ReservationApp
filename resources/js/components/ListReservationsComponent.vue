@@ -36,9 +36,6 @@
                     url: '/api/reservations'
                 }).then(response => {
                     this.reservations = response.data;
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error.data);
                 });
             },
             deleteReservation: function (id) {
@@ -46,11 +43,8 @@
                     method: 'delete',
                     url: '/api/reservations/' + id
                 }).then(response => {
-                    console.log(response);
                     Event.$emit('clearAddEditComponent');
                     this.readReservations()
-                }).catch(error => {
-                    console.log(error.response)
                 });
             },
             editReservation: function(id) {

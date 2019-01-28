@@ -44,7 +44,6 @@
                     url: url,
                     data: this.workplace
                 }).then(response => {
-                    console.log(response)
                     if(response.status === 201 || response.status === 200) {
                         this.success = response.status === 200 ? "Save edited workplace." : "Added new workplace";
                         this.clearComponent();
@@ -55,7 +54,6 @@
                         Event.$emit('refreshWorkplacesTable')
                     }
                 }).catch(error => {
-                    console.log(error.response.data)
                     this.errors = error.response.data.errors;
                 });
             },
@@ -64,29 +62,27 @@
                     method: 'get',
                     url: 'api/workplaces/' + editWorkplaceId
                 }).then(response => {
-                    console.log(response.data)
                     this.editing = true;
                     this.workplace = {
                         mark: response.data.mark,
                         description: response.data.description
-                    }
-                    this.editWorkplaceId = editWorkplaceId
+                    };
+                    this.editWorkplaceId = editWorkplaceId;
                 }).catch(error => {
-                    console.log(error.response)
                 })
             },
             clearComponent: function () {
-                this.errors = false
+                this.errors = false;
                 this.workplace = {
                     mark: '',
                     description: ''
-                }
+                };
                 this.editing = false;
-                this.editWorkplaceId = ''
+                this.editWorkplaceId = '';
             }
         },
         mounted() {
-            console.log('Component mounted.')
+            console.log('Component mounted.');
 
             Event.$on('editWorkplace', (editWorkplaceId) => {
                 this.setEditingWorkplace(editWorkplaceId);
